@@ -24,6 +24,7 @@ describe('The validate middlewawre', function() {
                 body: helpers.getUser({id: 'badId'})
             },
             res = {},
+            middleware,
             next = function(){};
 
         middleware = validate('body', helpers.UserSchema);
@@ -55,6 +56,7 @@ describe('The validate middlewawre', function() {
             },
             res = {},
             next = sinon.spy(),
+            middleware,
             options = {
                 onValidResult: function(result, req, res, next, key){
                     req.validated = req[key];
@@ -82,6 +84,7 @@ describe('The validate middlewawre', function() {
             },
             res = {},
             next = function(){},
+            middleware,
             options = {
                 onInvalidResult: function(result, req, res, next, key){
                     req.invalidated = req[key];
@@ -127,6 +130,7 @@ describe('The validate middlewawre', function() {
             },
             res = {},
             next = function(){},
+            middleware,
             options = {},
             validator = new Validator(),
             CustomSchema = assign({}, helpers.UserSchema);
