@@ -7,6 +7,7 @@ describe('The validate middlewawre', function() {
                 body: helpers.getUser()
             },
             res = {},
+            middleware,
             next = sinon.spy();
 
         middleware = validate('body', helpers.UserSchema);
@@ -127,7 +128,7 @@ describe('The validate middlewawre', function() {
             res = {},
             next = function(){},
             options = {},
-            validator = new Validator();
+            validator = new Validator(),
             CustomSchema = assign({}, helpers.UserSchema);
 
 
