@@ -181,8 +181,6 @@ Tests are written using [mocha](https://www.npmjs.com/package/mocha) and [should
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 
-https://www.npmjs.com/package/express-jsonschema
-
 [npm-image]: https://img.shields.io/npm/v/express-jsonschema.svg?style=flat
 [npm-url]: https://npmjs.org/package/express-jsonschema
 [travis-image]: https://img.shields.io/travis/metalculus84/express-jsonschema.svg?style=flat
