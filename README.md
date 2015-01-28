@@ -7,14 +7,14 @@ This library can be easily integrated into an express applicaton to validate API
 ## Why validate with JSON schemas?
 
 - **Simple** - JSON schemas are a simple and expressive way to describe a data structure that your API expects.
-- **Fail-Fast** - Validating the quality of an API payload before running your application code, you will catch errors early that would otherwise lead to more confusing errors later.
-- **Separate Validation Code** - Manually inspecting your API payload for errors can get lengthy and clutter up your application code.
+- **Fail-Fast** - Validating a payload before handing it to your application code will catch errors early that would otherwise lead to more confusing errors later.
+- **Separate Validation Code** - Manually inspecting a payload for errors can get lengthy and clutter up your application code.
 - **Error Messaging** -  Coming up with error messaging for every validation error becomes tedious and inconsistent.
 - **Documentation** - Creating a JSON schema documents the API requirements.
 
 ## Why validate with express-jsonschema?
 
-express-jsonschema is a super thin wrapper around the  [jsonschema]( https://github.com/tdegrunt/jsonschema) library.  The  libary is really popular (10K+ downloads / week) and adheres to latest IETF published draft of JSON schema, v4. Other express validation libraries out there are not that popular and do not follow JSON schema standards.
+express-jsonschema is a super thin wrapper around the  [jsonschema]( https://github.com/tdegrunt/jsonschema) library.  The  libary is really popular (10K+ downloads / week) and adheres to latest IETF published draft of JSON schema. Other express validation libraries out there are not that popular and do not follow JSON schema standards.
 
 ## express-jsonschema should not be used for:
 
@@ -52,6 +52,16 @@ app.post('/', validateReq('body', SomeSchema), function(req, res) {
 
 // If req.body is invalid a `ValidatorResult` instance is thrown
 // that contains information about why the validation failed.
+
+// e.g posting {foo: 1} would throw
+//
+// {
+//     instance: 1,
+//     message: 'is not of a type(s) string',
+//     property: 'instance.foo',
+//     schema: { type: 'string' },
+//     stack: 'instance.foo is not of a type(s) string'
+// }
 ```
 
 ### validateReq(property, schema, options)
