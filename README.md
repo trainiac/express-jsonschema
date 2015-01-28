@@ -1,5 +1,8 @@
 # express-jsonschema
 
+[![Build Status][travis-image]][travis-url]
+[![Test Coverage][coveralls-image]][coveralls-url]
+
 [express.js]( https://github.com/visionmedia/express ) middleware for JSON schema validation.
 
 This library can be easily integrated into an `express` applicaton to validate API payloads (e.g. `request.params`, `request.query`, `request.body`, etc.) against a [JSON schema]( http://json-schema.org/ ).
@@ -45,7 +48,7 @@ var SomeSchema = {
 }
 
 app.post('/', validateReq('body', SomeSchema), function(req, res) {
-    // If the req.body value is matches SomeSchema,
+    // If req.body matches SomeSchema,
     // your application code can now run knowing
     // req.body is {foo: 'someString'}.
 });
@@ -94,14 +97,13 @@ var options = {
 }
 
 app.post('/', validateReq('body', SomeSchema, options), function(req, res) {
-    // You application code can now run knowing
-    // req.body is {foo: 'someString'}.
+
 });
 ```
 
 ##### options.validator
 
-While JSON schemas offer a lot of validation tools out of the box you may want to add your own custom schema property.
+While JSON schemas offer a lot of validation tools out of the box, you may want to add your own custom schema properties.
 The `validator` option should be an instance of `Validator`.
 
 ```javascript
@@ -135,7 +137,7 @@ app.post('/', validateReq('body', FooBarSchema, options), function(req, res) {
     // req.body.foo contains 'bar'
 });
 ```
-For more on creating custom `Validator`s please refer to the [jsonschema]( https://github.com/tdegrunt/jsonschema) documentation.
+For more on creating a custom `Validator` please refer to the [jsonschema]( https://github.com/tdegrunt/jsonschema) documentation.
 
 #### jsonschema options
 
@@ -176,3 +178,8 @@ Tests are written using [mocha](https://www.npmjs.com/package/mocha) and [should
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
+
+[travis-image]: https://img.shields.io/travis/metalculus84/express-jsonschema.svg?style=flat
+[travis-url]: https://travis-ci.org/metalculus84/express-jsonschema
+[coveralls-image]: https://img.shields.io/coveralls/metalculus84/express-jsonschema.svg?style=flat
+[coveralls-url]: https://coveralls.io/r/metalculus84/express-jsonschema?branch=master
