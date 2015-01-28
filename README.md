@@ -12,7 +12,7 @@ This library can be easily integrated into an express applicaton to validate API
 - **Error Messaging** -  Coming up with error messaging for every validation error becomes tedious and inconsistent.
 - **Documentation** - Creating a JSON schema documents the API requirements.
 
-## Validation express-jsonschema should not be used for.
+## express-jsonschema should not be used for:
 
 - **Authentication**. This should be handled upstream by some other middleware.
 - **Data dependent validation**.  Sometimes part of an API payload's validity depends on your application data. Two common examples are checking duplicate object ids and user action authorization. This category of validation should be encapsulated in your application business logic.
@@ -41,19 +41,14 @@ var SomeSchema = {
 }
 
 app.post('/', validateReq('body', SomeSchema), function(req, res) {
-    // You application code can now run knowing
+    // If the req.body value is matches SomeSchema,
+    // your application code can now run knowing
     // req.body is {foo: 'someString'}.
 });
 
+// If req.body is invalid a `ValidatorResult` instance is thrown
+// that contains information about why the validation failed.
 ```
-
-#### What happens when the data is valid?
-
-The `next` function is called and your request is off to the next piece of middleware.
-
-#### What happens when the data is invalid?
-
-By default, a `ValidatorResult` instance is thrown that contains information about why the validation failed.
 
 ### validateReq(property, schema, options)
 
@@ -65,7 +60,7 @@ Returns an `express` middleware function that validates `request[property]` agai
 
 #### options
 
-##### ifInvalid(result, req, res, next)
+##### options.ifInvalid(result, req, res, next)
 
 A function that is called when the request property's value does not match the schema.  As mentioned before, by default, a `ValidatorResult` instance is thrown that contains information about why the validation failed.  You may want throw your own custom error, do some logging, or not throw any error at all and let the route handle the invalid data.
 
@@ -90,9 +85,10 @@ app.post('/', validateReq('body', SomeSchema, options), function(req, res) {
 });
 ```
 
-##### validator
+##### options.validator
 
 While JSON schemas offer a lot of validation tools out of the box you may want to add your own custom schema property.
+The `validator` option should be an instance of `Validator`.
 
 ```javascript
 var jsonchema = require('express-jsonschema');
