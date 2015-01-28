@@ -1,31 +1,35 @@
 var assign = require('object-assign'),
-    Validator = require('jsonschema').Validator,
+    jsonschema = require('jsonschema'),
     defaults = {
         // middleware specific options
-        onInvalidResult: function(result, req, res, next, key){
+        ifInvalid: function(result, req, res, next){
             throw result;
-        },
-        onValidResult: function(result, req, res, next, key){
-            next();
         }
     };
 
-module.exports = function(key, schema, options) {
+exports = module.exports;
+exports.Validator = jsonschema.Validator;
+exports.ValidatorResult = jsonschema.ValidatorResult;
+exports.ValidationError = jsonschema.ValidationError;
+exports.SchemaError = jsonschema.SchemaError;
+exports.validate = jsonschema.validate;
+
+exports.validateReq = function(property, schema, options) {
     var settings,
-        v;
+        validator;
 
     options = options || {};
     settings = assign({}, defaults, options);
 
-    // if the a validator instance is passed into the middleware
+    // if a validator instance is passed into the middleware
     // function use that over the default
-    v = options.validator || new Validator();
+    validator = options.validator || jsonschema;
     return function(req, res, next) {
-        var result = v.validate(req[key], schema, options);
+        var result = validator.validate(req[property], schema, options);
         if (result.valid) {
-            settings.onValidResult(result, req, res, next, key);
+            next();
         } else {
-            settings.onInvalidResult(result, req, res, next, key);
+            settings.ifInvalid(result, req, res, next);
         }
     };
 };

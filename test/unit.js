@@ -1,7 +1,7 @@
 describe('The validate middlewawre', function() {
     it('should call the next middleware on successful validation', function() {
         var helpers = require('./helpers'),
-            validate = require('../index'),
+            validateReq = require('../index').validateReq,
             sinon = require('sinon'),
             req = {
                 body: helpers.getUser()
@@ -10,15 +10,15 @@ describe('The validate middlewawre', function() {
             middleware,
             next = sinon.spy();
 
-        middleware = validate('body', helpers.UserSchema);
+        middleware = validateReq('body', helpers.UserSchema);
         middleware(req, res, next);
         next.calledWith();
     });
 
     it('should throw ValidatorResult with an invalid payload', function() {
         var helpers = require('./helpers'),
-            validate = require('../index'),
-            ValidatorResult = require('jsonschema').ValidatorResult,
+            validateReq = require('../index').validateReq,
+            ValidatorResult = require('../index').ValidatorResult,
             sinon = require('sinon'),
             req = {
                 body: helpers.getUser({id: 'badId'})
@@ -27,7 +27,7 @@ describe('The validate middlewawre', function() {
             middleware,
             next = function(){};
 
-        middleware = validate('body', helpers.UserSchema);
+        middleware = validateReq('body', helpers.UserSchema);
 
         (function(){
             middleware(req, res, next);
@@ -47,38 +47,10 @@ describe('The validate middlewawre', function() {
 
     });
 
-    it('should accept an onValidResult callback and call it when a payload is a valid schema.', function(){
+    it('should accept an ifInvalid callback and call it when a payload is an invalid schema.', function(){
         var helpers = require('./helpers'),
-            validate = require('../index'),
-            sinon = require('sinon'),
-            req = {
-                body: helpers.getUser()
-            },
-            res = {},
-            next = sinon.spy(),
-            middleware,
-            options = {
-                onValidResult: function(result, req, res, next, key){
-                    req.validated = req[key];
-                    req.result = result;
-                    req.res = res;
-                    next();
-                }
-            };
-
-        middleware = validate('body', helpers.UserSchema, options);
-        middleware(req, res, next);
-
-        req.validated.should.equal(req.body);
-        req.result.valid.should.equal(true);
-        req.res.should.equal(res);
-        next.calledWith();
-    });
-
-    it('should accept an onInvalidResult callback and call it when a payload is an invalid schema.', function(){
-        var helpers = require('./helpers'),
-            validate = require('../index'),
-            ValidatorResult = require('jsonschema').ValidatorResult,
+            validateReq = require('../index').validateReq,
+            ValidatorResult = require('../index').ValidatorResult,
             req = {
                 body: helpers.getUser({id: 'badId'})
             },
@@ -86,15 +58,14 @@ describe('The validate middlewawre', function() {
             next = function(){},
             middleware,
             options = {
-                onInvalidResult: function(result, req, res, next, key){
-                    req.invalidated = req[key];
+                ifInvalid: function(result, req, res, next){
                     req.res = res;
                     req.theNextFunc = next;
                     throw result;
                 }
             };
 
-        middleware = validate('body', helpers.UserSchema, options);
+        middleware = validateReq('body', helpers.UserSchema, options);
 
         (function(){
             middleware(req, res, next);
@@ -112,16 +83,15 @@ describe('The validate middlewawre', function() {
             throwError: undefined
         });
 
-        req.invalidated.should.equal(req.body);
         req.res.should.equal(res);
         req.theNextFunc.should.equal(next);
     });
 
     it('should accept a custom validator instance and use it to validate the payload', function(){
         var helpers = require('./helpers'),
-            validate = require('../index'),
-            ValidatorResult = require('jsonschema').ValidatorResult,
-            Validator = require('jsonschema').Validator,
+            validateReq = require('../index').validateReq,
+            ValidatorResult = require('../index').ValidatorResult,
+            Validator = require('../index').Validator,
             assign = require('object-assign'),
             req = {
                 body: helpers.getUser({
@@ -147,7 +117,7 @@ describe('The validate middlewawre', function() {
         // Add our custom json schema attribute to the schema we will validate against.
         CustomSchema.properties.firstName.contains = 'Todd';
 
-        middleware = validate('body', CustomSchema, options);
+        middleware = validateReq('body', CustomSchema, options);
         (function(){
             middleware(req, res, next);
         }).should.throw(ValidatorResult, {
