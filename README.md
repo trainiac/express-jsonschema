@@ -6,16 +6,16 @@ This library can be easily integrated into an express applicaton to validate API
 
 ## Why validate with express-jsonschema?
 
-- *Simple* - JSON schemas are a simple and expressive way to describe a data structure that your API expects.
-- *Fail-Fast* - Validating the quality of an API payload before running your application code, you will catch errors early that would otherwise lead to more confusing errors later.
-- *Separate Validation Code* - Manually inspecting your API payload for errors can get lengthy and clutter up your application code.
-- *Error Messaging* -  Coming up with error messaging for every validation error becomes tedious and inconsistent.
-- *Documentation* - Creating a JSON schema documents the API requirements.
+- **Simple** - JSON schemas are a simple and expressive way to describe a data structure that your API expects.
+- **Fail-Fast** - Validating the quality of an API payload before running your application code, you will catch errors early that would otherwise lead to more confusing errors later.
+- **Separate Validation Code** - Manually inspecting your API payload for errors can get lengthy and clutter up your application code.
+- **Error Messaging** -  Coming up with error messaging for every validation error becomes tedious and inconsistent.
+- **Documentation** - Creating a JSON schema documents the API requirements.
 
 ## Validation express-jsonschema should not be used for.
 
-- *Authentication*. This should be handled upstream by some other middleware.
-- *Data dependent validation*.  Sometimes part of an API payload's validity depends on your application data. Two common examples are checking duplicate object ids and user action authorization. This category of validation should be encapsulated in your application business logic.
+- **Authentication**. This should be handled upstream by some other middleware.
+- **Data dependent validation**.  Sometimes part of an API payload's validity depends on your application data. Two common examples are checking duplicate object ids and user action authorization. This category of validation should be encapsulated in your application business logic.
 
 ## Installation
 
