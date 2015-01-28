@@ -1,10 +1,10 @@
 # express-jsonschema
 
-[express.js]( https://github.com/visionmedia/express ) middleware for [jsonschema]( https://github.com/tdegrunt/jsonschema) validation.
+[express.js]( https://github.com/visionmedia/express ) middleware for JSON schema validation.
 
 This library can be easily integrated into an express applicaton to validate API payloads (e.g. request.params, request.query, request.body, etc.) against a [JSON schema]( http://json-schema.org/ ).
 
-## Why validate with express-jsonschema?
+## Why validate with JSON schemas?
 
 - **Simple** - JSON schemas are a simple and expressive way to describe a data structure that your API expects.
 - **Fail-Fast** - Validating the quality of an API payload before running your application code, you will catch errors early that would otherwise lead to more confusing errors later.
@@ -12,10 +12,14 @@ This library can be easily integrated into an express applicaton to validate API
 - **Error Messaging** -  Coming up with error messaging for every validation error becomes tedious and inconsistent.
 - **Documentation** - Creating a JSON schema documents the API requirements.
 
+## Why validate with express-jsonschema?
+
+express-jsonschema is a super thin wrapper around the  [jsonschema]( https://github.com/tdegrunt/jsonschema) library.  The  libary is really popular (10K+ downloads / week) and adheres to latest IETF published draft of JSON schema, v4. Other express validation libraries out there are not that popular and do not follow JSON schema standards.
+
 ## express-jsonschema should not be used for:
 
 - **Authentication**. This should be handled upstream by some other middleware.
-- **Data dependent validation**.  Sometimes part of an API payload's validity depends on your application data. Two common examples are checking duplicate object ids and user action authorization. This category of validation should be encapsulated in your application business logic.
+- **Data dependent validation**.  Sometimes a payload's validity depends on your application data. Two common examples are checking duplicate object ids and user action authorization. This category of validation should be encapsulated in your application business logic.
 
 ## Installation
 
