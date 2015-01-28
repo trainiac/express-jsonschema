@@ -2,7 +2,7 @@
 
 [express.js]( https://github.com/visionmedia/express ) middleware for JSON schema validation.
 
-This library can be easily integrated into an express applicaton to validate API payloads (e.g. request.params, request.query, request.body, etc.) against a [JSON schema]( http://json-schema.org/ ).
+This library can be easily integrated into an express applicaton to validate API payloads (e.g. `request.params`, `request.query`, `request.body`, etc.) against a [JSON schema]( http://json-schema.org/ ).
 
 ## Why validate with JSON schemas?
 
