@@ -8,7 +8,7 @@
   - added .jscsrc and .jshintrc files for formatting and code integrity
   - moved most of the unit tests over to functional tests as it is a better
     indicator of whether the module is working.
-  - dropped object-assing dependency.
+  - dropped object-assign dependency.
   - no longer exporting jsonschema exports.  Users can require jsonschema directly if they are needed.
     - `jsonschema.Validator`
     - `jsonschema.ValidatorResult`
