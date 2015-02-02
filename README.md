@@ -87,14 +87,14 @@ jsonSchemaValidation.validations.body[0]
 
 {
   value: '12',
-  message: 'is not of a type(s) integer',
+  messages: ['is not of a type(s) integer'],  // you can have multiple validations
   property: 'request.body.number',
 }
 
 jsonSchemaValidation.validations.body[1]
 
 {
-  message: 'is required',
+  messages: ['is required'],
   property: 'request.body.name'
 }
 
@@ -102,7 +102,7 @@ jsonSchemaValidation.validations.body[2]
 
 {
   value: 'Drive',
-  message: 'is not one of enum values: Street, Avenue, Boulevard',
+  messages: ['is not one of enum values: Street, Avenue, Boulevard'],
   property: 'request.body.type'
 }
 ```

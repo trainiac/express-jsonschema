@@ -1,3 +1,7 @@
+1.0.0 / 2015-02-02
+==================
+  - Fixed README. messages key is an array of strings.
+
 1.0.0 / 2015-02-01
 ==================
 
@@ -6,11 +10,11 @@
     indicator of whether the module is working.
   - dropped object-assing dependency.
   - no longer exporting jsonschema exports.  Users can require jsonschema directly if they are needed.
-    - `jsonschema.Validator`;
-    - `jsonschema.ValidatorResult`;
-    - `jsonschema.ValidationError`;
-    - `jsonschema.SchemaError`;
-    - `jsonschema.validate`;
+    - `jsonschema.Validator`
+    - `jsonschema.ValidatorResult`
+    - `jsonschema.ValidationError`
+    - `jsonschema.SchemaError`
+    - `jsonschema.validate`
   - `validateReq` is now `validate` and receives one argument, an object where the keys are the request
     properties and the values are the respective schemas.  This is more flexible going forward.
   - `validateReq` allowed options `validator` and `ifInvalid`.  These have been removed as they provide
