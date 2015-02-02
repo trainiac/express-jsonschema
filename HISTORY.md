@@ -1,4 +1,4 @@
-1.0.0 / 2015-02-02
+1.0.1 / 2015-02-02
 ==================
   - Fixed README. messages key is an array of strings.
 
