@@ -7,24 +7,20 @@
 
 [express.js]( https://github.com/visionmedia/express ) middleware for JSON schema validation.
 
-This library can be easily integrated into an `express` applicaton to validate API payloads (e.g. `request.params`, `request.query`, `request.body`, etc.) against a [JSON schema]( http://json-schema.org/ ).
+## Why validate with express-jsonschema?
+
+- It makes setting up request validation simple and gets out of your way.
+- It makes no assumptions about how you want to handle invalid data. Response status codes, message formatting, content type, and logging strategies are not one size fits all.
+- It leverages the [jsonschema][jsonschema-url] library to conduct JSON schema validation. `jsonschema` is popular (10K+ downloads / week) and adheres to the latest IETF published v4 draft of JSON schema.
 
 ## Why validate with JSON schemas?
 
 - **Simple** - JSON schemas are a simple and expressive way to describe a data structure that your API expects.
+- **Standard** - JSON schemas are not specific to javascript. They are used in many server side languages. The standard specification lives here [jscon-schema.org][json-schema-url].
 - **Fail-Fast** - Validating a payload before handing it to your application code will catch errors early that would otherwise lead to more confusing errors later.
-- **Separate Validation Code** - Manually inspecting a payload for errors can get lengthy and clutter up your application code.
+- **Separate Validation** - Manually inspecting a payload for errors can get lengthy and clutter up your application code.
 - **Error Messaging** -  Coming up with error messaging for every validation error becomes tedious and inconsistent.
 - **Documentation** - Creating a JSON schema documents the API requirements.
-
-## Why validate with express-jsonschema?
-
-`express-jsonschema` is a super thin wrapper around the  [jsonschema]( https://github.com/tdegrunt/jsonschema) library.  The  libary is really popular (10K+ downloads / week) and adheres to latest IETF published draft of JSON schema. Other express validation libraries out there are not that popular and do not follow JSON schema standards.
-
-## express-jsonschema should not be used for:
-
-- **Authentication**. This should be handled upstream by some other middleware.
-- **Data dependent validation**.  Sometimes a payload's validity depends on your application data. Two common examples are checking duplicate object ids and user action authorization. This category of validation should be encapsulated in your application business logic.
 
 ## Installation
 
@@ -37,120 +33,207 @@ $ npm install express-jsonschema
 ```js
 var express = require('express');
 var app = express();
-var validateReq = require('express-jsonschema').validateReq;
+var validate = require('express-jsonschema').validate;
 
-// Create your own json scehma
-var SomeSchema = {
-    'type': 'object',
-    'properties': {
-        'foo': {
-            'type': 'string'
+// Create a json scehma
+var StreetSchema = {
+    type: 'object',
+    properties: {
+        number: {
+            type: 'number',
+            required: true
+        },
+        name: {
+            type: 'string',
+            required: true
+        },
+        type: {
+            type: 'string',
+            required: true
+            enum: ['Street', 'Avenue', 'Boulevard']
         }
     }
 }
 
-app.post('/', validateReq('body', SomeSchema), function(req, res) {
-    // If req.body matches SomeSchema,
-    // your application code can now run knowing
-    // req.body is {foo: 'someString'}.
+app.post('/street/', validate({body: SteetSchema}), function(req, res) {
+    // application code
 });
-
-// If req.body is invalid a `ValidatorResult` instance is thrown
-// that contains information about why the validation failed.
-
-// e.g posting {foo: 1} would throw
-//
-// {
-//     instance: 1,
-//     message: 'is not of a type(s) string',
-//     property: 'instance.foo',
-//     schema: { type: 'string' },
-//     stack: 'instance.foo is not of a type(s) string'
-// }
 ```
 
-### validateReq(property, schema, options)
+A valid post body:
 
-- `property` a string that represents the request property you want to validate.
-- `schema` a json schema that describes the expected format of the data in `request[property]`
-- `options` an object of options for customizing the validation behavior.
+```js
+{
+    number: 12,
+    name: 'Sycamore',
+    type: 'Street'
+}
+```
 
-Returns an `express` middleware function that validates `request[property]` against the `schema`.
+An invalid post body:
 
-#### options
+```js
+{
+    number: '12',      // This should be a number
+                       // A 'name' key is missing
+    type: 'Drive'      // 'Drive' is not one of the valid types
+}
+```
 
-##### options.ifInvalid(result, req, res, next)
+Posting the above object would throw a `JsonSchemaValidation` instance that would look like this
 
-A function that is called when the request property's value does not match the schema.  As mentioned before, by default, a `ValidatorResult` instance is thrown that contains information about why the validation failed.  You may want throw your own custom error, do some logging, or not throw any error at all and let the route handle the invalid data.
+```js
+jsonSchemaValidation.validations.body[0]
 
-The first argument passed to the callback is `result`, an instance of `ValidatorResult` that contains information about why the validation failed.  The rest of the arguments are the usual `req`, `res`, and `next` middleware params.
+{
+  value: '12',
+  message: 'is not of a type(s) integer',
+  property: 'request.body.number',
+}
 
-```javascript
-var options = {
-	ifInvalid: function(result, req, res, next){
-        // set a bad response status
+jsonSchemaValidation.validations.body[1]
+
+{
+  message: 'is required',
+  property: 'request.body.name'
+}
+
+jsonSchemaValidation.validations.body[2]
+
+{
+  value: 'Drive',
+  message: 'is not one of enum values: Street, Avenue, Boulevard',
+  property: 'request.body.type'
+}
+```
+
+## Validating multiple request properties
+
+Sometimes your route may depend on the `body` and `query` both having a specific format.  In this
+example I use `body` and `query` but you can choose to validate any `request` properties you'd like.
+
+```js
+var TokenSchema = {
+    type: 'object',
+    properties: {
+        token: {
+            type: 'string',
+            format: 'alphanumeric',
+            minLength: 10,
+            maxLength: 10,
+            required: true
+        }
+    }
+}
+
+app.post('/street/', validate({body: StreetSchema, query: TokenSchema}), function(req, res) {
+    // application code
+});
+```
+
+A valid request would now also require a url like `/street/?token=F42G5N5BGC`.
+
+## Handling invalid data
+
+As mentioned before, how one handles an invalid request depends on their application. You can easily
+create some [express error middleware](http://expressjs.com/guide/error-handling.html) to customize how your application behaves.
+As mentioned, when the `validate` middleware finds invalid data it throws an instance of `JsonSchemaValidation`.
+Below is an example of how to handle invalid data.
+
+```js
+var JsonSchemaValidation = require('express-jsonschema').JsonSchemaValidation;
+
+app.use(function(err, req, res, next) {
+    var responseData;
+    if (err instanceof JsonSchemaValidation) {
+
+        // Log the error however you please
+        console.log(err.message);
+        // logs "express-jsonschema: Invalid data found"
+
+        // Set a bad request http response status
         res.status(400);
 
-        // log the validation message.
-        console.log(result.stack);
+        // Format the response body
+        responseData = {
+           statusText: 'Bad Request',
+           jsonSchemaValidation: true,
+           validations: err.validations  // All of your validation information
+        }
 
-        throw result;
+        // Respond with the right content type
+        if (req.xhr || req.get('Content-Type') === 'application/json')
+            res.json(responseData);
+        } else {
+            req.render('badrequestTemplate', responseData);
+        }
+
+    } else {
+        // pass error to next error middleware handler
+        next(err);
     }
-}
-
-app.post('/', validateReq('body', SomeSchema, options), function(req, res) {
-
 });
+
+
 ```
 
-##### options.validator
+## Creating custom schema properties
 
-While JSON schemas offer a lot of validation tools out of the box, you may want to add your own custom schema properties.
-The `validator` option should be an instance of `Validator`.
+While JSON schema comes with a lot of validation properties out of the box, you may want to add your own
+custom properties. `addSchemaProperties` allows you to extend the validation properties that can be used in your
+schemas. It should be called once at the beginning of your application so that your schemas will
+have the custom properties available.
 
 ```javascript
-var jsonchema = require('express-jsonschema');
-var Validator = jsonschema.Validator;
-var validator = new Validator();
-validator.attributes.contains = function validateContains(instance, schema, options, ctx) {
-  if(typeof instance!='string') return;
-  if(typeof schema.contains!='string') throw new jsonschema.SchemaError('"contains" expects a string', schema);
-  if(instance.indexOf()<0){
-    return 'does not contain the string ' + JSON.stringify(schema.contains);
-  }
-}
+var addAttributes = require('express-jsonschema').addSchemaProperties;
 
-var FooBarSchema = {
-    'type': 'object',
-    'properties': {
-        'foo': {
-            'type': 'string',
-            'contains': 'bar'
+addSchemaProperties({
+    contains: function(value, schema){
+        ...
+    },
+    isDoubleQuoted: function(value, schema){
+        ...
+    }
+});
+```
+See [jsonschema's how to create custom properties](https://github.com/tdegrunt/jsonschema#custom-properties).
+
+## More documentation on JSON schemas
+
+- [scpacetelescope's understanding json schema](http://spacetelescope.github.io/understanding-json-schema/)
+- [jsonschema][jsonschema-url]
+- [json-schema.org][json-schema-url]
+- [json schema generator](http://jsonschema.net/)
+- [json schema google group](https://groups.google.com/forum/#!forum/json-schema)
+
+## Notes
+
+You can declare that something is required in your schema in two ways.
+
+```js
+{
+    type: 'object',
+    properties: {
+        foo: {
+            type: 'string',
+            required: true
         }
     }
 }
 
-var options = {
-	validator: validator
+// OR
+
+{
+    type: 'object',
+    properties: {
+        foo: {
+            type: 'string'
+        },
+        required: ['foo']
+    }
 }
-
-app.post('/', validateReq('body', FooBarSchema, options), function(req, res) {
-    // You application code can now run knowing
-    // req.body.foo contains 'bar'
-});
 ```
-For more on creating a custom `Validator` please refer to the [jsonschema]( https://github.com/tdegrunt/jsonschema) documentation.
-
-#### jsonschema options
-
-Within `validateReq` the [jsonschema]( https://github.com/tdegrunt/jsonschema) library is used to do the validating.  It's `Validator.validate` accepts several options.  All options passed to `validateReq` are also passed to the validate function that is called.
-
-To read more about the available `jsonschema` options please refer to the [jsonschema]( https://github.com/tdegrunt/jsonschema) documentation.
-
-## How do I write a jsonschema
-
-- This is a pretty friendly site: http://spacetelescope.github.io/understanding-json-schema/
-- This is the jsonschema spec: http://json-schema.org/
+The first method works as expected with [jsonschema][jsonschema-url]. The second way has a few gotchas. I recommend using the first.
 
 ## Tests
 Tests are written using [mocha](https://www.npmjs.com/package/mocha) and [should](https://www.npmjs.com/package/should).
@@ -181,11 +264,14 @@ Tests are written using [mocha](https://www.npmjs.com/package/mocha) and [should
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 
+
 [npm-image]: https://img.shields.io/npm/v/express-jsonschema.svg?style=flat
 [npm-url]: https://npmjs.org/package/express-jsonschema
-[travis-image]: https://img.shields.io/travis/metalculus84/express-jsonschema.svg?style=flat
-[travis-url]: https://travis-ci.org/metalculus84/express-jsonschema
-[coveralls-image]: https://img.shields.io/coveralls/metalculus84/express-jsonschema.svg?style=flat
-[coveralls-url]: https://coveralls.io/r/metalculus84/express-jsonschema?branch=master
+[travis-image]: https://img.shields.io/travis/trainiac/express-jsonschema.svg?style=flat
+[travis-url]: https://travis-ci.org/trainiac/express-jsonschema
+[coveralls-image]: https://img.shields.io/coveralls/trainiac/express-jsonschema.svg?style=flat
+[coveralls-url]: https://coveralls.io/r/trainiac/express-jsonschema?branch=master
 [downloads-image]: https://img.shields.io/npm/dm/express-jsonschema.svg?style=flat
 [downloads-url]: https://npmjs.org/package/express-jsonschema
+[json-schema-url]: http://json-schema.org/
+[jsonschema-url]: https://github.com/tdegrunt/jsonschema

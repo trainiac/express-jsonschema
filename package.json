@@ -1,12 +1,12 @@
 {
   "name": "express-jsonschema",
   "description": "Express middleware for jsonchema validation.",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "author": "Adrian Adkison <adkison.adrian@gmail.com>",
   "licenses": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://github.com/metalculus84/express-jsonschema.git"
+    "url": "git://github.com/trainiac/express-jsonschema.git"
   },
   "keywords": [
     "express",
@@ -15,14 +15,16 @@
     "validate"
   ],
   "dependencies": {
-    "jsonschema": "^1.0.0",
-    "object-assign": "^2.0.0"
+    "jsonschema": "^1.0.0"
   },
   "devDependencies": {
+    "body-parser": "^1.11.0",
+    "express": "^4.11.2",
     "istanbul": "^0.3.5",
+    "merge": "^1.2.0",
     "mocha": "^2.1.0",
     "should": "^4.6.1",
-    "sinon": "^1.12.2"
+    "supertest": "^0.15.0"
   },
   "main": "./index.js",
   "engines": {

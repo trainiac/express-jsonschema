@@ -1,0 +1,17 @@
+{
+    "bitwise": true,
+    "curly": true,
+    "eqeqeq": true,
+    "latedef": true,
+    "undef": true,
+    "unused": true,
+    "evil": true,
+    "freeze": true,
+    "immed": true,
+    "noarg": true,
+    "nonew": true,
+    "maxdepth": 4,
+    "node": true,
+    "maxstatements": 30,
+    "maxcomplexity": 14
+}
