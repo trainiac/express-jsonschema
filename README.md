@@ -159,13 +159,13 @@ app.use(function(err, req, res, next) {
            statusText: 'Bad Request',
            jsonSchemaValidation: true,
            validations: err.validations  // All of your validation information
-        }
+        };
 
         // Respond with the right content type
-        if (req.xhr || req.get('Content-Type') === 'application/json')
+        if (req.xhr || req.get('Content-Type') === 'application/json') {
             res.json(responseData);
         } else {
-            req.render('badrequestTemplate', responseData);
+            res.render('badrequestTemplate', responseData);
         }
 
     } else {
