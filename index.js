@@ -107,7 +107,7 @@ function validate(schemas) {
             }
         });
         if (Object.keys(validations).length) {
-            throw new JsonSchemaValidation(validations);
+            next(new JsonSchemaValidation(validations));
         } else {
             next();
         }
