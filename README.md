@@ -136,16 +136,13 @@ A valid request would now also require a url like `/street/?token=F42G5N5BGC`.
 ## Handling invalid data
 
 As mentioned before, how one handles an invalid request depends on their application. You can easily
-create some [express error middleware](http://expressjs.com/guide/error-handling.html) to customize how your application behaves.
-As mentioned, when the `validate` middleware finds invalid data it throws an instance of `JsonSchemaValidation`.
-Below is an example of how to handle invalid data.
+create some [express error middleware](http://expressjs.com/guide/error-handling.html) to customize how your application behaves. When the `validate` middleware finds invalid data it passes an instance of `JsonSchemaValidation` to the
+next middleware. Below is an example of how to handle invalid data.
 
 ```js
-var JsonSchemaValidation = require('express-jsonschema').JsonSchemaValidation;
-
 app.use(function(err, req, res, next) {
     var responseData;
-    if (err instanceof JsonSchemaValidation) {
+    if (err.name === 'JsonSchemaValidation') {
 
         // Log the error however you please
         console.log(err.message);

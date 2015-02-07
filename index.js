@@ -1,15 +1,31 @@
+/**
+    @module express-jsonschema
+    @author Adrian Adkison
+ */
+
+
 var jsonschema = require('jsonschema'),
     customProperties = {};
 
-function formatValidations(validations) {
-    /*
-        - Removes excessive validation information
-        from jsonschema.
-        - Changes validation key names to more intuitive names
-        - Consolidations validation messages for the same property
-        under one validation object
-    */
 
+/**
+   @function formatValidations
+
+   @desc Formats the validation data structure from the jsonschema
+         library into a more convenient data structure.
+
+   @private
+
+   @param {Object} validations - An object where the keys are request
+          properties and the values are their respective jsonschema
+          validations.
+
+   @returns {Object} formatted - An object where the keys are request
+            properties and the values are their respective formatted
+            validations.
+*/
+
+function formatValidations(validations) {
     var formatted = {};
 
     Object.keys(validations).forEach(function(requestProperty) {
@@ -38,12 +54,23 @@ function formatValidations(validations) {
     return formatted;
 }
 
+
+/**
+   @constructor JsonSchemaCustomPropertyError
+
+   @desc Instantiated when a client attempts to add a custom schema property
+      that already exists.
+
+   @public
+
+   @param {String} propertyName - The name of the schema property that has a conflict.
+*/
+
 function JsonSchemaCustomPropertyError(propertyName) {
-    /*
-       This constructor function is invoked when a client
-       attempts to add a custom schema property that already
-       exists.
-    */
+    /** @member {String} name */
+    this.name = 'JsonSchemaCustomPropertyError';
+
+    /** @member {String} message */
     this.message = (
         'express-jsonschema: The schema property "' + propertyName +
         '" already exists. See if it achieves what you need or try ' +
@@ -51,21 +78,49 @@ function JsonSchemaCustomPropertyError(propertyName) {
     );
 }
 
+
+/**
+   @constructor JsonSchemaValidation
+
+   @desc Instantiated when invalid data is found in the request.
+
+   @public
+
+   @param {Object} validations - An object where the keys are request
+          properties and the values are their respective jsonschema
+          validations.
+*/
+
 function JsonSchemaValidation(validations) {
-    /*
-       This constructor function is invoked when the
-       `validate` middleware finds invalid data in
-       the request.
-    */
-    this.validations = formatValidations(validations);
+    /** @member {String} name */
+    this.name = 'JsonSchemaValidation';
+
+    /** @member {String} message */
     this.message = 'express-jsonschema: Invalid data found';
+
+    /** @member {Object} validations */
+    this.validations = formatValidations(validations);
 }
 
+
+/**
+   @function addSchemaProperties
+
+   @desc Updates customProperties with
+       the newProperties param.  Provides a way for client
+       to extend JSON Schema validations.
+
+   @public
+
+   @param {Object} newProperties - An object where the keys are the
+          names of the new schema properties and the values are the respective
+          functions that implement the validation.
+
+   @throws {JsonSchemaCustomPropertyError} Client tries to override
+           an existing JSON Schema property.
+*/
+
 function addSchemaProperties(newProperties) {
-    /*
-       Updates the private customProperties var with
-       the users custom schema properties.
-    */
     var validator = new jsonschema.Validator();
     Object.keys(newProperties).forEach(function(attr) {
         if (validator.attributes[attr]) {
@@ -75,16 +130,27 @@ function addSchemaProperties(newProperties) {
     });
 }
 
-function validate(schemas) {
-    /*
-       Accepts an object where the keys are request properties and the
-       values are their respective schemas.
 
-       Returns an express middleware function that validates the given
-       request properties when a request is made.  If there is any invalid
-       data a `JsonSchemaValidation` instance is thrown.  If the data is
-       valid the `next` function is called.
-    */
+/**
+   @function validate
+
+   @desc Accepts an object where the keys are request properties and the
+         values are their respective schemas.
+
+         Returns a middleware function that validates the given
+         request properties when a request is made.  If there is any invalid
+         data a JsonSchemaValidation instance is passed to the next middleware.
+         If the data is valid the next middleware is called with no params.
+
+   @public
+
+   @param {Object} schemas - An object where the keys are request properties
+          and the values are their respective schemas.
+
+   @returns {callback} - A middleware function.
+*/
+
+function validate(schemas) {
     var validator = new jsonschema.Validator();
 
     Object.keys(customProperties).forEach(function(attr) {
