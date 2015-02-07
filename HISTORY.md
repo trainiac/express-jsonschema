@@ -1,3 +1,8 @@
+1.0.2 / 2015-02-06
+==================
+  - Pass `JsonSchemaValidation` instance to `next` middleware instead of throwing.
+  - Added name properties to error constructors.
+
 1.0.1 / 2015-02-02
 ==================
   - Fixed README. messages key is an array of strings.
