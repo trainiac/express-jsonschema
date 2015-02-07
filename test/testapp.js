@@ -3,7 +3,6 @@ var express = require('express'),
     helpers = require('./helpers'),
     validate = require('../index.js').validate,
     SchemaError = require('jsonschema'),
-    JsonSchemaValidation = require('../index.js').JsonSchemaValidation,
     addSchemaProperties = require('../index.js').addSchemaProperties,
     app = express();
 
@@ -78,7 +77,7 @@ app.post(
 /****** Setup validation handler **************/
 
 app.use(function(err, req, res, next) {
-    if (err instanceof JsonSchemaValidation) {
+    if (err.name === 'JsonSchemaValidation') {
         res.status(400);
         res.json({
             statusText: 'Bad Request',
