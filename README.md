@@ -233,7 +233,8 @@ You can declare that something is required in your schema in two ways.
 The first method works as expected with [jsonschema][jsonschema-url]. The second way has a few gotchas. I recommend using the first.
 
 ## Tests
-Tests are written using [mocha](https://www.npmjs.com/package/mocha) and [should](https://www.npmjs.com/package/should).
+Tests are written using [mocha](https://www.npmjs.com/package/mocha), [should](https://www.npmjs.com/package/should),
+and [supertest](https://www.npmjs.com/package/supertest).
 
     npm test
 
