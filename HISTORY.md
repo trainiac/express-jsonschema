@@ -1,3 +1,7 @@
+1.1.0  / 2015-07-06
+==========================================
+  - Allow middleware creator to specify dependency schemas for split schemas (@SpainTrain).
+
 1.0.2 / 2015-02-06
 ==================
   - Pass `JsonSchemaValidation` instance to `next` middleware instead of throwing.
