@@ -15,6 +15,26 @@ module.exports = {
             }
         }, overrides || {});
     },
+    getAddressSchema: function(overrides) {
+        return merge.recursive(true, {
+            'id': '/AddressSchema',
+            'type': 'object',
+            'properties': {
+                'street': {
+                    'type': 'string',
+                    'required': true
+                },
+                'country': {
+                    'type': 'string',
+                    'required': true
+                },
+                'city': {
+                    'type': 'string',
+                    'required': true
+                }
+            }
+        }, overrides || {});
+    },
     getUserSchema: function(overrides) {
         return merge.recursive(true, {
             'id': '/UserSchema',
@@ -69,7 +89,7 @@ module.exports = {
             firstName: 'Todd',
             lastName: 'Terje',
             email: 'todd@terje.com',
-            adress: {
+            address: {
                 street: '1 Aasta Hansteens vei',
                 country: 'Norway',
                 city: 'Oslo'
