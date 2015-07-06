@@ -74,6 +74,22 @@ app.post(
     }
 );
 
+app.post(
+    '/user/split_schema/',
+    validate({
+        body: helpers.getUserSchema({
+            properties: {
+                address: {'$ref': '/AddressSchema'}
+            }
+        })
+    }, [helpers.getAddressSchema()]),
+    function(req, res) {
+        res.json({
+            id: '1337'
+        });
+    }
+);
+
 /****** Setup validation handler **************/
 
 app.use(function(err, req, res, next) {
@@ -89,4 +105,3 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
-

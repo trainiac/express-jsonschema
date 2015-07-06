@@ -55,7 +55,7 @@ var StreetSchema = {
     }
 }
 
-app.post('/street/', validate({body: SteetSchema}), function(req, res) {
+app.post('/street/', validate({body: StreetSchema}), function(req, res) {
     // application code
 });
 ```
@@ -194,6 +194,56 @@ addSchemaProperties({
 });
 ```
 See [jsonschema's how to create custom properties](https://github.com/tdegrunt/jsonschema#custom-properties).
+
+## Complex example, with split schemas and references
+
+```js
+var express = require('express');
+var app = express();
+var validate = require('express-jsonschema').validate;
+
+// Address, to be embedded on Person
+var AddressSchema = {
+    "id": "/SimpleAddress",
+    "type": "object",
+    "properties": {
+        "street": {"type": "string"},
+        "zip": {"type": "string"},
+        "city": {"type": "string"},
+        "state": {"type": "string"},
+        "country": {"type": "string"}
+    }
+};
+
+// Person
+var PersonSchema = {
+    "id": "/SimplePerson",
+    "type": "object",
+    "properties": {
+        "name": {"type": "string"},
+        "address": {"$ref": "/SimpleAddress"}
+    }
+};
+
+app.post('/person/', validate({body: PersonSchema}, [AddressSchema]), function(req, res) {
+    // application code
+});
+```
+
+A valid post body:
+
+```json
+{
+    "name": "Barack Obama",
+    "address": {
+        "street": "1600 Pennsylvania Avenue Northwest",
+        "zip": "20500",
+        "city": "Washington",
+        "state": "DC",
+        "country": "USA"
+    }
+}
+```
 
 ## More documentation on JSON schemas
 

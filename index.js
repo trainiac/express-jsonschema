@@ -135,7 +135,10 @@ function addSchemaProperties(newProperties) {
    @function validate
 
    @desc Accepts an object where the keys are request properties and the
-         values are their respective schemas.
+         values are their respective schemas.  Optionally, you may provide
+         dependency schemas that are referenced by your schemas using `$ref`
+         (see https://www.npmjs.com/package/jsonschema#complex-example-with-split-schemas-and-references
+         for more details).
 
          Returns a middleware function that validates the given
          request properties when a request is made.  If there is any invalid
@@ -147,11 +150,19 @@ function addSchemaProperties(newProperties) {
    @param {Object} schemas - An object where the keys are request properties
           and the values are their respective schemas.
 
+   @param {Array<Object>} [schemaDependencies] - A list of schemas on which
+          schemas in `schemas` parameter are dependent.  These will be added
+          to the `jsonschema` validator.
+
    @returns {callback} - A middleware function.
 */
 
-function validate(schemas) {
+function validate(schemas, schemaDependencies) {
     var validator = new jsonschema.Validator();
+
+    if (Array.isArray(schemaDependencies)) {
+        schemaDependencies.forEach(validator.addSchema.bind(validator));
+    }
 
     Object.keys(customProperties).forEach(function(attr) {
         validator.attributes[attr] = customProperties[attr];

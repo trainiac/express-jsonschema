@@ -5,13 +5,24 @@ var request = require('supertest'),
     app = require('./testapp');
 
 require('should');
-describe('A route with validation middlewawre', function() {
+describe('A route with validation middleware', function() {
     it('should respond with a 200 if the posted body is valid', function(done) {
         request(app)
             .post('/user/')
             .send(helpers.getUser())
             .expect(function(response) {
                 response.body.should.eql({id: '1234'});
+            })
+            .expect(200)
+            .end(done);
+    });
+
+    it('should respond with a 200 if the posted body is valid and using split schema', function(done) {
+        request(app)
+            .post('/user/split_schema/')
+            .send(helpers.getUser())
+            .expect(function(response) {
+                response.body.should.eql({id: '1337'});
             })
             .expect(200)
             .end(done);
