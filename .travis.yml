@@ -11,6 +11,7 @@ before_install:
 - npm update -g npm
 script: npm run-script test-travis
 after_script: npm install coveralls@2.10.0 && cat ./coverage/lcov.info | coveralls
+sudo: required
 deploy:
   provider: npm
   email: adkison.adrian@gmail.com

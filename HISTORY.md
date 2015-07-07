@@ -1,3 +1,7 @@
+1.1.1  / 2015-07-06
+==========================================
+  - Added auto travis.ci builds on tag push.
+
 1.1.0  / 2015-07-06
 ==========================================
   - Allow middleware creator to specify dependency schemas for split schemas (@SpainTrain).
