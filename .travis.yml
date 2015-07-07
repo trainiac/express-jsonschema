@@ -14,6 +14,7 @@ deploy:
   provider: npm
   email: adkison.adrian@gmail.com
   api_key:
-    secure: JrB2Gm+GgaKTxC+74Qbm5mzmHX8mYRiS/Wx5mNsYEmgFTFJItKbW04AwMe3p+EGK/Q/7GPYWvtFxjm5aFayhKgm/sTWffHblKc0Xb6TNJuXuxw04dicrCThuufcTdo9OwETrPmo3Kjcx0Vj3zMsqdIqwTS0Gq772Ld2Q+B6jqWI=
+    secure: Vqf8HlqcSRl1aWpP9UCPHnVf0t/d2YFjK/AfXhGqVzB66NXg7RPUpFo3p8k+znvuKnamGbmIa2oGs7H0kl++n8yF9x5amQoxAxd/MSXWGH8XveSpmVexVQz1loMytsTvgmJxhuCDL/3pL6pJJIci3ujzF58UOZe2EYOVYsNw5qQ=
   on:
     tags: true
+    repo: trainiac/express-jsonschema
