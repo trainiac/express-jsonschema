@@ -1,13 +1,20 @@
 language: node_js
 node_js:
-  - "0.8"
-  - "0.10"
-  - "0.11"
+- '0.8'
+- '0.10'
+- '0.11'
 matrix:
   allow_failures:
-    - node_js: "0.11"
+  - node_js: '0.11'
   fast_finish: true
 before_install:
-  - npm update -g npm
-script: "npm run-script test-travis"
-after_script: "npm install coveralls@2.10.0 && cat ./coverage/lcov.info | coveralls"
+- npm update -g npm
+script: npm run-script test-travis
+after_script: npm install coveralls@2.10.0 && cat ./coverage/lcov.info | coveralls
+deploy:
+  provider: npm
+  email: adkison.adrian@gmail.com
+  api_key:
+    secure: koCEetdFb3+P1ANy58FXDwbhj/j10Ty2UJU6aNkqGBzdafqClTC795dPjEaTacu8BkHKxlDk7muSjZIKWyHalLUzEllpnS7vcIiEklWmr3npMd1FUPwd2mnfql49/BazwjCndv9Oni5r8GkOa3+2oHPZXQlbulLPNgi2gwmzROE=
+  on:
+    tags: true
