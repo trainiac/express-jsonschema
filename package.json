@@ -1,6 +1,6 @@
 {
   "name": "express-jsonschema",
-  "description": "Express middleware for jsonchema validation.",
+  "description": "Express middleware for jsonschema validation.",
   "version": "1.1.4",
   "author": "Adrian Adkison <adkison.adrian@gmail.com>",
   "licenses": "MIT",
@@ -10,7 +10,7 @@
   },
   "keywords": [
     "express",
-    "jsonchema",
+    "jsonschema",
     "validation",
     "validate"
   ],
