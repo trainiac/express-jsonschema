@@ -161,7 +161,9 @@ function validate(schemas, schemaDependencies) {
     var validator = new jsonschema.Validator();
 
     if (Array.isArray(schemaDependencies)) {
-        schemaDependencies.forEach(validator.addSchema.bind(validator));
+        for(var i = 0; i < schemaDependencies.length; i++) {
+            validator.addSchema(schemaDependencies[i]);
+        }
     }
 
     Object.keys(customProperties).forEach(function(attr) {
