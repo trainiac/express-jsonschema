@@ -81,7 +81,7 @@ describe('A route with validation middleware', function() {
                         body: [{
                             value: 'junk',
                             messages: [
-                                'does not conform to the \'email\' format',
+                                'does not conform to the "email" format',
                                 'does not meet minimum length of 7',
                                 'does not contain the string "terje.com"'
                             ],
