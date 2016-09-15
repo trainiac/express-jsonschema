@@ -35,6 +35,16 @@ module.exports = {
             }
         }, overrides || {});
     },
+    getEmailSchema: function(overrides) {
+        return merge.recursive(true, {
+            'id': '/EmailSchema',
+            'type': 'string',
+            'format': 'email',
+            'minLength': '7',
+            'contains': 'terje.com',
+            'required': true
+        }, overrides || {});
+    },
     getUserSchema: function(overrides) {
         return merge.recursive(true, {
             'id': '/UserSchema',
