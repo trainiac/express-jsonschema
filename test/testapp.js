@@ -90,6 +90,23 @@ app.post(
     }
 );
 
+app.post(
+    '/user/multiple_split_schemas/',
+    validate({
+        body: helpers.getUserSchema({
+            properties: {
+                address: {'$ref': '/AddressSchema'},
+                email: {'$ref': '/EmailSchema'}
+            }
+        })
+    }, [helpers.getAddressSchema(), helpers.getEmailSchema()]),
+    function(req, res) {
+        res.json({
+            id: '1337'
+        });
+    }
+);
+
 /****** Setup validation handler **************/
 
 app.use(function(err, req, res, next) {

@@ -28,6 +28,17 @@ describe('A route with validation middleware', function() {
             .end(done);
     });
 
+    it('should respond with a 200 if the posted body is valid and using multiple split schemas', function(done) {
+        request(app)
+            .post('/user/multiple_split_schemas/')
+            .send(helpers.getUser())
+            .expect(function(response) {
+                response.body.should.eql({id: '1337'});
+            })
+            .expect(200)
+            .end(done);
+    });
+
     it('should respond with a 400 if the posted body is invalid', function(done) {
         request(app)
             .post('/user/')
@@ -81,7 +92,7 @@ describe('A route with validation middleware', function() {
                         body: [{
                             value: 'junk',
                             messages: [
-                                'does not conform to the \'email\' format',
+                                'does not conform to the "email" format',
                                 'does not meet minimum length of 7',
                                 'does not contain the string "terje.com"'
                             ],
