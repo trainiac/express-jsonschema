@@ -182,7 +182,7 @@ schemas. It should be called once at the beginning of your application so that y
 have the custom properties available.
 
 ```javascript
-var addAttributes = require('express-jsonschema').addSchemaProperties;
+var addSchemaProperties = require('express-jsonschema').addSchemaProperties;
 
 addSchemaProperties({
     contains: function(value, schema){
