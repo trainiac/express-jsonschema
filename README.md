@@ -16,7 +16,7 @@
 ## Why validate with JSON schemas?
 
 - **Simple** - JSON schemas are a simple and expressive way to describe a data structure that your API expects.
-- **Standard** - JSON schemas are not specific to javascript. They are used in many server side languages. The standard specification lives here [jscon-schema.org][json-schema-url].
+- **Standard** - JSON schemas are not specific to javascript. They are used in many server side languages. The standard specification lives here [json-schema.org][json-schema-url].
 - **Fail-Fast** - Validating a payload before handing it to your application code will catch errors early that would otherwise lead to more confusing errors later.
 - **Separate Validation** - Manually inspecting a payload for errors can get lengthy and clutter up your application code.
 - **Error Messaging** -  Coming up with error messaging for every validation error becomes tedious and inconsistent.
