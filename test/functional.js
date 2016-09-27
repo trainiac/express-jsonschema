@@ -4,7 +4,6 @@ var request = require('supertest'),
     helpers = require('./helpers'),
     app = require('./testapp');
 
-require('should');
 describe('A route with validation middleware', function() {
     it('should respond with a 200 if the posted body is valid', function(done) {
         request(app)
@@ -81,7 +80,7 @@ describe('A route with validation middleware', function() {
                         body: [{
                             value: 'junk',
                             messages: [
-                                'does not conform to the \'email\' format',
+                                'does not conform to the "email" format',
                                 'does not meet minimum length of 7',
                                 'does not contain the string "terje.com"'
                             ],
