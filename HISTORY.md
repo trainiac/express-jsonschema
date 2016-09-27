@@ -1,3 +1,9 @@
+1.1.5  / 2016-09-27
+==========================================
+  - Fix README typos
+  - Within the  function only pass a schema to addSchema and do not pipe arguments other arguments from forEach
+
+
 1.1.1-4  / 2015-07-06
 ==========================================
   - Testing auto builds with Travis CI.
