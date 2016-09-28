@@ -28,12 +28,13 @@
 $ npm install express-jsonschema
 ```
 
-## API
+## Example
 
 ```js
 var express = require('express');
 var app = express();
 var validate = require('express-jsonschema').validate;
+var bodyParser = require('body-parser');
 
 // Create a json scehma
 var StreetSchema = {
@@ -55,55 +56,87 @@ var StreetSchema = {
     }
 }
 
+// This route validates req.body against the StreetSchema
 app.post('/street/', validate({body: StreetSchema}), function(req, res) {
-    // application code
+    // At this point req.body has been validated and you can
+    // begin to execute your application code
+});
+
+/*
+    Setup a general error handler for JsonSchemaValidation errors.
+    As mentioned before, how one handles an invalid request depends on their application.
+    You can easily create some express error middleware
+    (http://expressjs.com/guide/error-handling.html) to customize how your
+    application behaves. When the express-jsonschema.validate middleware finds invalid data it
+    passes an instance of JsonSchemaValidation to the next middleware.
+    Below is an example of a general JsonSchemaValidation error handler for
+    an application.
+*/
+app.use(function(err, req, res, next) {
+
+    var responseData;
+
+    if (err.name === 'JsonSchemaValidation') {
+        // Log the error however you please
+        console.log(err.message);
+        // logs "express-jsonschema: Invalid data found"
+
+        // Set a bad request http response status or whatever you want
+        res.status(400);
+
+        // Format the response body however you want
+        responseData = {
+           statusText: 'Bad Request',
+           jsonSchemaValidation: true,
+           validations: err.validations  // All of your validation information
+        };
+
+        // Take into account the content type if your app serves various content types
+        if (req.xhr || req.get('Content-Type') === 'application/json') {
+            res.json(responseData);
+        } else {
+            // If this is an html request then you should probably have
+            // some type of Bad Request html template to respond with
+            res.render('badrequestTemplate', responseData);
+        }
+    } else {
+        // pass error to next error middleware handler
+        next(err);
+    }
+});
+
+app.use(bodyParser.json());
+app.listen(8080, function(){
+    console.log('app is running')
 });
 ```
 
-A valid post body:
+## Request
 
-```js
-{
-    number: 12,
-    name: 'Sycamore',
-    type: 'Street'
-}
+```
+$ curl -H "Content-Type: application/json" -X POST -d '{ "number": "12", "type": "Drive"}' http://localhost:8080/street/
 ```
 
-An invalid post body:
+## Response
 
 ```js
 {
-    number: '12',      // This should be a number
-                       // A 'name' key is missing
-    type: 'Drive'      // 'Drive' is not one of the valid types
-}
-```
-
-Posting the above object would throw a `JsonSchemaValidation` instance that would look like this
-
-```js
-jsonSchemaValidation.validations.body[0]
-
-{
-  value: '12',
-  messages: ['is not of a type(s) integer'],  // you can have multiple validations
-  property: 'request.body.number',
-}
-
-jsonSchemaValidation.validations.body[1]
-
-{
-  messages: ['is required'],
-  property: 'request.body.name'
-}
-
-jsonSchemaValidation.validations.body[2]
-
-{
-  value: 'Drive',
-  messages: ['is not one of enum values: Street, Avenue, Boulevard'],
-  property: 'request.body.type'
+    "statusText":"Bad Request",
+    "jsonSchemaValidation":true,
+    "validations":{
+        "body":[{
+            "value":"12",
+            "property":"request.body.number",
+            "messages":["is not of a type(s)number"]
+        }, {
+           "property":"request.body.name",
+           "messages":["is required"]
+        }, {
+           "value":"Drive",
+           "property":"request.body.type",
+           "messages":["is not one of enum values: Street,Avenue,Boulevard"]
+        }]
+    }
 }
 ```
 
@@ -133,46 +166,6 @@ app.post('/street/', validate({body: StreetSchema, query: TokenSchema}), functio
 
 A valid request would now also require a url like `/street/?token=F42G5N5BGC`.
 
-## Handling invalid data
-
-As mentioned before, how one handles an invalid request depends on their application. You can easily
-create some [express error middleware](http://expressjs.com/guide/error-handling.html) to customize how your application behaves. When the `validate` middleware finds invalid data it passes an instance of `JsonSchemaValidation` to the
-next middleware. Below is an example of how to handle invalid data.
-
-```js
-app.use(function(err, req, res, next) {
-    var responseData;
-    if (err.name === 'JsonSchemaValidation') {
-
-        // Log the error however you please
-        console.log(err.message);
-        // logs "express-jsonschema: Invalid data found"
-
-        // Set a bad request http response status
-        res.status(400);
-
-        // Format the response body
-        responseData = {
-           statusText: 'Bad Request',
-           jsonSchemaValidation: true,
-           validations: err.validations  // All of your validation information
-        };
-
-        // Respond with the right content type
-        if (req.xhr || req.get('Content-Type') === 'application/json') {
-            res.json(responseData);
-        } else {
-            res.render('badrequestTemplate', responseData);
-        }
-
-    } else {
-        // pass error to next error middleware handler
-        next(err);
-    }
-});
-
-
-```
 
 ## Creating custom schema properties
 
