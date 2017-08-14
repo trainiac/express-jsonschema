@@ -1,5 +1,13 @@
 # express-jsonschema
 
+WARNING: This project is no longer maintained. But I have some good news:   
+
+1. If someone would like to volunteer to take it over I'd be happy to give them access to the repository.  I've seen some uses say that this lib should use `ajv` instead of `jsconschema` other than that I think everything is still working well for people.
+
+2. This library is one file large and has 5 short functions, there is no special sauce here. This library is more of a recommendation of how to leverage jsonschemas in your API and keep things flexible than secret code tricks.
+
+Best of luck my friends!
+
 [![NPM Version][npm-image]][npm-url]
 [![NPM Downloads][downloads-image]][downloads-url]
 [![Build Status][travis-image]][travis-url]
