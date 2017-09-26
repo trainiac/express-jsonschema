@@ -1,10 +1,6 @@
 # express-jsonschema
 
-*WARNING*: This project is no longer maintained. But I have some good news:   
-
-  1. If someone would like to volunteer to take it over I'd be happy to give them access to the repository, just create an issue and let me know.  I've seen some users say that this lib should use `ajv` instead of `jsconschema` other than that I think everything is still working well for people.
-
-  2. This library is one file large and has 5 short functions, there is no special sauce here. This library is more of a recommendation of how to leverage jsonschemas in your API and keep things flexible than secret code tricks.
+*WARNING*: This project is no longer maintained. Use https://github.com/JouzaLoL/express-json-validator-middleware instead!
 
 Best of luck my friends!
 
