@@ -1,6 +1,6 @@
 # express-jsonschema
 
-*WARNING*: This project is no longer maintained. Use https://github.com/JouzaLoL/express-json-validator-middleware instead!
+*WARNING*: This project is no longer maintained. Use [express-json-validator-middleware](https://github.com/JouzaLoL/express-json-validator-middleware) instead!
 
 Best of luck my friends!
 
