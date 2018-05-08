@@ -54,11 +54,11 @@ var StreetSchema = {
         },
         type: {
             type: 'string',
-            required: true
+            required: true,
             enum: ['Street', 'Avenue', 'Boulevard']
         }
     }
-}
+};
 
 // This route validates req.body against the StreetSchema
 app.post('/street/', validate({body: StreetSchema}), function(req, res) {
