@@ -40,7 +40,7 @@ var app = express();
 var validate = require('express-jsonschema').validate;
 var bodyParser = require('body-parser');
 
-// Create a json scehma
+// Create a json schema
 var StreetSchema = {
     type: 'object',
     properties: {
