@@ -90,18 +90,14 @@ function JsonSchemaCustomPropertyError(propertyName) {
           properties and the values are their respective jsonschema
           validations.
 */
-
-function JsonSchemaValidation(validations) {
-    /** @member {String} name */
-    this.name = 'JsonSchemaValidation';
-
-    /** @member {String} message */
-    this.message = 'express-jsonschema: Invalid data found';
-
-    /** @member {Object} validations */
-    this.validations = formatValidations(validations);
+class JsonSchemaValidation extends Error {
+    constructor(validations) {
+        super('express-jsonschema: Invalid data found');
+        this.name = 'JsonSchemaValidation';
+        this.validations = formatValidations(validations);
+        Object.setPrototypeOf(this, JsonSchemaValidation.prototype);
+    }
 }
-
 
 /**
    @function addSchemaProperties

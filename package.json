@@ -1,7 +1,7 @@
 {
-  "name": "express-jsonschema",
+  "name": "@suitespot/express-jsonschema",
   "description": "Express middleware for jsonschema validation.",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "author": "Adrian Adkison <adkison.adrian@gmail.com>",
   "licenses": "MIT",
   "repository": {
